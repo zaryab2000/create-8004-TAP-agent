@@ -233,12 +233,19 @@ ${hasA2A
   const txHandle = await agent.registerIPFS();
   const { result } = await txHandle.waitMined();
 
-  // Set agent wallet via ERC-8004 v2 setAgentWallet() (not deprecated metadata)
-  // This uses EIP-712 signature verification for security
+  // Set agent wallet via ERC-8004 v2 setAgentWallet()
   console.log('');
   console.log('🔐 Setting agent wallet via setAgentWallet()...');
-  const walletTx = await agent.setWallet('${answers.agentWallet}');
-  await walletTx.waitMined();
+  try {
+    const walletTx = await agent.setWallet('${answers.agentWallet}');
+    if (walletTx?.waitMined) {
+      await walletTx.waitMined();
+    }
+    console.log('✅ Agent wallet set.');
+  } catch (walletErr: any) {
+    console.log('⚠️  setWallet skipped:', walletErr.message || walletErr);
+    console.log('   (agent is still registered — wallet can be set later)');
+  }
 
   // Output results
   console.log('');

@@ -36,3 +36,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 docs-internal/
+
+# scaffolded agent projects (generated output, may contain .env with keys)
+my-agent/
+test-agent-*/

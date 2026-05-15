@@ -41,7 +41,8 @@ export function generateTapRegistrationBlock(
       const TAP_IPFS_GATEWAY = '${TAP_CONSTANTS.IPFS_GATEWAY}';
 
       // Set up viem clients for the source chain
-      const tapAccount = privateKeyToAccount(privateKey as \`0x\${string}\`);
+      const tapKey = privateKey.startsWith('0x') ? privateKey : \`0x\${privateKey}\`;
+      const tapAccount = privateKeyToAccount(tapKey as \`0x\${string}\`);
       const tapPublicClient = createPublicClient({
         transport: http(rpcUrl),
       });
