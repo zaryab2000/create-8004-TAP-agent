@@ -168,8 +168,8 @@ export declare const TRUST_MODELS: readonly ["reputation", "crypto-economic", "t
 export type TrustModel = (typeof TRUST_MODELS)[number];
 export declare const TAP_GATEWAYS: Partial<Record<ChainKey, string>>;
 export declare const TAP_CONSTANTS: {
-    readonly AGENT_REGISTRY: "0x13499d36729467bd5C6B44725a10a0113cE47178";
-    readonly REPUTATION_REGISTRY: "0x90B484063622289742516c5dDFdDf1C1A3C2c50C";
+    readonly AGENT_REGISTRY: "0xa2B09263a7a41567D5F53b7d9F7CA1c6cc046CE2";
+    readonly REPUTATION_REGISTRY: "0x591A56D98A14e8A88722F794981F00CabB328a91";
     readonly ERC8004_IDENTITY_TESTNET: "0x8004A818BFB912233c491871b3d84c89A494BD9e";
     readonly ERC8004_IDENTITY_MAINNET: "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432";
     readonly PUSH_CHAIN_RPC: "https://evm.donut.rpc.push.org/";

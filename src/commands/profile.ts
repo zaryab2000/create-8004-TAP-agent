@@ -49,7 +49,7 @@ async function displayTapProfile(agentId: bigint): Promise<void> {
             pushClient.readContract({
                 address: registryAddr,
                 abi: agentRegistryAbi,
-                functionName: "canonicalUEA",
+                functionName: "canonicalOwner",
                 args: [agentId],
             }),
             pushClient.readContract({
@@ -117,7 +117,7 @@ async function displayTapProfile(agentId: bigint): Promise<void> {
                 pushClient.readContract({
                     address: registryAddr,
                     abi: agentRegistryAbi,
-                    functionName: "canonicalUEAFromBinding",
+                    functionName: "canonicalOwnerFromBinding",
                     args: [
                         b.chainNamespace,
                         b.chainId,
@@ -201,7 +201,7 @@ async function displaySourceChainAgent(
         const [canonical, verified] = await pushClient.readContract({
             address: TAP_CONSTANTS.AGENT_REGISTRY as `0x${string}`,
             abi: agentRegistryAbi,
-            functionName: "canonicalUEAFromBinding",
+            functionName: "canonicalOwnerFromBinding",
             args: [
                 "eip155",
                 String(chain.chainId),

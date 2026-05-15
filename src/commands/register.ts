@@ -186,49 +186,94 @@ export async function runRegisterCommand(): Promise<void> {
         process.exit(1);
     }
 
+    const pushClient = createPushChainClient();
+
+    console.log(
+        chalk.dim("Checking for existing TAP identity..."),
+    );
+
+    let existingAgentId: bigint | null = null;
+    let existingChainKey: string | null = null;
+    for (const [gw] of Object.entries(TAP_GATEWAYS)) {
+        const gwChain = CHAINS[gw as ChainKey];
+        const { ueaAddress: gwUea } = await discoverUEA(
+            String(gwChain.chainId),
+            account.address,
+        );
+        const gwAgentId = computeCanonicalAgentId(gwUea);
+        const isReg = await pushClient.readContract({
+            address: TAP_CONSTANTS.AGENT_REGISTRY as `0x${string}`,
+            abi: agentRegistryAbi,
+            functionName: "isRegistered",
+            args: [gwAgentId],
+        });
+        if (isReg) {
+            existingAgentId = gwAgentId;
+            existingChainKey = gw;
+            break;
+        }
+    }
+
+    if (existingAgentId !== null) {
+        const registeredVia =
+            CHAINS[existingChainKey as ChainKey].name;
+        console.log();
+        console.log(
+            chalk.green(
+                `✓ You already have a TAP identity (registered via ${registeredVia})`,
+            ),
+        );
+        console.log(
+            chalk.green(
+                `✓ Universal Agent ID: ${existingAgentId}`,
+            ),
+        );
+
+        if (existingChainKey === answers.chain) {
+            console.log();
+            console.log(
+                chalk.dim(
+                    "  Running register again will update the metadata.",
+                ),
+            );
+            const { proceed } = await inquirer.prompt<{
+                proceed: boolean;
+            }>([
+                {
+                    type: "confirm",
+                    name: "proceed",
+                    message: "Update existing registration?",
+                    default: false,
+                },
+            ]);
+            if (!proceed) return;
+        } else {
+            console.log();
+            console.log(
+                chalk.yellow(
+                    "You cannot register again from a different chain.",
+                ),
+            );
+            console.log(
+                chalk.white(
+                    "  To link this agent, use the bind command instead:",
+                ),
+            );
+            console.log(
+                chalk.cyan(
+                    `  npx create-8004-agent bind`,
+                ),
+            );
+            console.log();
+            return;
+        }
+    }
+
     const { ueaAddress } = await discoverUEA(
         String(chain.chainId),
         account.address,
     );
     const canonicalAgentId = computeCanonicalAgentId(ueaAddress);
-
-    const pushClient = createPushChainClient();
-    const isAlreadyRegistered = await pushClient.readContract({
-        address: TAP_CONSTANTS.AGENT_REGISTRY as `0x${string}`,
-        abi: agentRegistryAbi,
-        functionName: "isRegistered",
-        args: [canonicalAgentId],
-    });
-
-    if (isAlreadyRegistered) {
-        console.log();
-        console.log(
-            chalk.yellow(
-                "Your agent is already registered on Push Chain.",
-            ),
-        );
-        console.log(
-            chalk.dim(
-                `  Universal Agent ID: ${canonicalAgentId}`,
-            ),
-        );
-        console.log(
-            chalk.dim(
-                "  Running register again will update the metadata.",
-            ),
-        );
-        const { proceed } = await inquirer.prompt<{
-            proceed: boolean;
-        }>([
-            {
-                type: "confirm",
-                name: "proceed",
-                message: "Update existing registration?",
-                default: false,
-            },
-        ]);
-        if (!proceed) return;
-    }
 
     console.log(
         chalk.dim(

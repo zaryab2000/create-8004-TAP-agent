@@ -193,7 +193,7 @@ export async function runBindCommand(): Promise<void> {
     const [existingCanonical] = await pushClient.readContract({
         address: TAP_CONSTANTS.AGENT_REGISTRY as `0x${string}`,
         abi: agentRegistryAbi,
-        functionName: "canonicalUEAFromBinding",
+        functionName: "canonicalOwnerFromBinding",
         args: [
             "eip155",
             String(targetChain.chainId),
@@ -240,7 +240,7 @@ export async function runBindCommand(): Promise<void> {
     const signature = await signBindRequest(
         gatewayWalletClient,
         {
-            canonicalUEA: registeredUEA,
+            canonicalOwner: registeredUEA,
             chainNamespace: "eip155",
             chainId: String(targetChain.chainId),
             registryAddress:

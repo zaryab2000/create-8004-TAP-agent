@@ -11,7 +11,7 @@ const BIND_DOMAIN = {
 
 const BIND_TYPES = {
     Bind: [
-        { name: "canonicalUEA", type: "address" },
+        { name: "canonicalOwner", type: "address" },
         { name: "chainNamespace", type: "string" },
         { name: "chainId", type: "string" },
         { name: "registryAddress", type: "address" },
@@ -22,7 +22,7 @@ const BIND_TYPES = {
 } as const;
 
 export interface BindSignatureParams {
-    canonicalUEA: `0x${string}`;
+    canonicalOwner: `0x${string}`;
     chainNamespace: string;
     chainId: string;
     registryAddress: `0x${string}`;
@@ -46,7 +46,7 @@ export async function signBindRequest(
         types: BIND_TYPES,
         primaryType: "Bind",
         message: {
-            canonicalUEA: params.canonicalUEA,
+            canonicalOwner: params.canonicalOwner,
             chainNamespace: params.chainNamespace,
             chainId: params.chainId,
             registryAddress: params.registryAddress,
