@@ -1,4 +1,4 @@
-# create-8004-agent
+# create-8004-tap-agent
 
 CLI to scaffold [ERC-8004](https://eips.ethereum.org/EIPS/eip-8004) AI agents with A2A, MCP, x402 payments, and [TAP](https://push.org) universal identity. Supports EVM chains, Solana, and Push Chain.
 
@@ -19,11 +19,21 @@ npx create-8004-agent --help
 
 ## Concepts
 
-**ERC-8004** — on-chain protocol for AI agent discovery and trust. Agents register as NFTs with identity, reputation, and validation registries.
+**ERC-8004 (Trustless Agents)** — on-chain protocol for AI agent discovery and trust. Agents register as NFTs with identity, reputation, and validation registries.
 
 **TAP (Trustless Agents Plus)** — universal agent identity on [Push Chain](https://push.org). Solves the multi-chain fragmentation problem: one Universal Agent ID across all chains. Register on your source chain via Universal Gateway → get a deterministic UEA (Universal Executor Account) on Push Chain → bind agents from other chains using EIP-712 signatures.
 
-> **TAP is currently available on testnets only.** Push Chain supports Ethereum, Base, BNB, Arbitrum, and Solana testnets. The CLI currently has live gateway support for Ethereum Sepolia and Base Sepolia, with more chains coming.
+> **TAP Supported Chains:
+> 1. Ethereum Sepolia,
+> 2. Base Sepolia,
+> 3. BNB Testnet,
+> 4. Arbitrum Sepolia,
+> 5. Solana Testnets.
+> *Note: The CLI currently has live gateway support for Ethereum Sepolia and Base Sepolia, with more chains coming*.
+
+### 8004 Agent vs 8004 TAP Agent
+
+![Before TAP (fragmented identity) vs After TAP (unified profile)](docs/assets/tap-vs-no-tap.png)
 
 ## Prerequisites
 
@@ -35,15 +45,15 @@ Node >= 18. The CLI generates a wallet for you if needed.
 
 Interactive wizard that generates a complete agent project. Options:
 
-| Option | Description |
-| ------ | ----------- |
-| Project directory | Where to create the project |
-| Agent name/description/image | Metadata for on-chain registration |
-| Agent wallet | EVM or Solana address (auto-generates if empty) |
-| Chain | Target blockchain network |
-| Features | A2A server, MCP server, x402 payments |
-| A2A streaming | SSE for streaming responses |
-| Trust models | reputation, crypto-economic, tee-attestation |
+| Option                       | Description                                     |
+| ---------------------------- | ----------------------------------------------- |
+| Project directory            | Where to create the project                     |
+| Agent name/description/image | Metadata for on-chain registration              |
+| Agent wallet                 | EVM or Solana address (auto-generates if empty) |
+| Chain                        | Target blockchain network                       |
+| Features                     | A2A server, MCP server, x402 payments           |
+| A2A streaming                | SSE for streaming responses                     |
+| Trust models                 | reputation, crypto-economic, tee-attestation    |
 
 ### `register`
 
@@ -122,20 +132,20 @@ On TAP-supported chains, the generated `register.ts` prompts to also create a TA
 
 ### EVM Chains
 
-| Chain | Chain ID | TAP Gateway | x402 | x402 Provider |
-| ----- | -------- | ----------- | ---- | ------------- |
-| Ethereum Sepolia | 11155111 | `0x05bD7a3D18324c1F7e216f7fBF2b15985aE5281A` | Yes | 4mica |
-| Base Sepolia | 84532 | `0xFD4fef1F43aFEc8b5bcdEEc47f35a1431479aC16` | Yes | PayAI |
-| Base Mainnet | 8453 | — | Yes | PayAI |
-| Polygon Amoy | 80002 | — | Yes | PayAI, 4mica |
-| Polygon Mainnet | 137 | — | Yes | PayAI |
-| SKALE Base Sepolia | 324705682 | — | Yes | PayAI |
-| SKALE Base Mainnet | 1187947933 | — | Yes | PayAI |
-| Avalanche Fuji | 43113 | — | — | — |
-| Avalanche C-Chain | 43114 | — | — | — |
-| Monad Testnet | 10143 | — | — | — |
-| Monad Mainnet | 143 | — | — | — |
-| Ethereum Mainnet | 1 | — | — | — |
+| Chain              | Chain ID   | TAP Gateway                                  | x402 | x402 Provider |
+| ------------------ | ---------- | -------------------------------------------- | ---- | ------------- |
+| Ethereum Sepolia   | 11155111   | `0x05bD7a3D18324c1F7e216f7fBF2b15985aE5281A` | Yes  | 4mica         |
+| Base Sepolia       | 84532      | `0xFD4fef1F43aFEc8b5bcdEEc47f35a1431479aC16` | Yes  | PayAI         |
+| Base Mainnet       | 8453       | —                                            | Yes  | PayAI         |
+| Polygon Amoy       | 80002      | —                                            | Yes  | PayAI, 4mica  |
+| Polygon Mainnet    | 137        | —                                            | Yes  | PayAI         |
+| SKALE Base Sepolia | 324705682  | —                                            | Yes  | PayAI         |
+| SKALE Base Mainnet | 1187947933 | —                                            | Yes  | PayAI         |
+| Avalanche Fuji     | 43113      | —                                            | —    | —             |
+| Avalanche C-Chain  | 43114      | —                                            | —    | —             |
+| Monad Testnet      | 10143      | —                                            | —    | —             |
+| Monad Mainnet      | 143        | —                                            | —    | —             |
+| Ethereum Mainnet   | 1          | —                                            | —    | —             |
 
 > **TAP Gateway** = supports `register`, `bind`, and automatic TAP registration during scaffold. Chains without a gateway can still have agents **bound** to a TAP identity (the bind tx routes through a gateway chain).
 
@@ -143,24 +153,24 @@ On TAP-supported chains, the generated `register.ts` prompts to also create a TA
 
 ### Solana
 
-| Network | Program ID |
-| ------- | ---------- |
-| Devnet | `HvF3JqhahcX7JfhbDRYYCJ7S3f6nJdrqu5yi9shyTREp` |
+| Network | Program ID                                     |
+| ------- | ---------------------------------------------- |
+| Devnet  | `HvF3JqhahcX7JfhbDRYYCJ7S3f6nJdrqu5yi9shyTREp` |
 
 ### Push Chain (TAP Contracts)
 
-| Contract | Address |
-| -------- | ------- |
-| AgentRegistry | `0x13499d36729467bd5C6B44725a10a0113cE47178` |
+| Contract           | Address                                      |
+| ------------------ | -------------------------------------------- |
+| AgentRegistry      | `0x13499d36729467bd5C6B44725a10a0113cE47178` |
 | ReputationRegistry | `0x90B484063622289742516c5dDFdDf1C1A3C2c50C` |
-| UEA Factory | `0x00000000000000000000000000000000000000eA` |
+| UEA Factory        | `0x00000000000000000000000000000000000000eA` |
 
 Push Chain Donut Testnet — Chain ID: `42101` — RPC: `https://evm.donut.rpc.push.org/`
 
 ### ERC-8004 Identity Registry
 
-| Network | Address |
-| ------- | ------- |
+| Network  | Address                                      |
+| -------- | -------------------------------------------- |
 | Testnets | `0x8004A818BFB912233c491871b3d84c89A494BD9e` |
 | Mainnets | `0x8004A169FB4a3325136EB29fA0ceB6D2e539a432` |
 
@@ -174,13 +184,13 @@ cd my-agent && npm install
 
 ### 1. Configure `.env`
 
-| Variable | Purpose |
-| -------- | ------- |
-| `PRIVATE_KEY` / `SOLANA_PRIVATE_KEY` | Wallet key (auto-generated if you left wallet empty) |
-| `OPENAI_API_KEY` | LLM responses |
-| `PINATA_JWT` | IPFS metadata upload ([pinata.cloud](https://pinata.cloud), needs `pinJSONToIPFS` scope) |
-| `X402_PAYEE_ADDRESS` | (x402 only) Wallet to receive payments |
-| `X402_PRICE` | (x402 only) Per-request price in USDC (default: 0.001) |
+| Variable                             | Purpose                                                                                  |
+| ------------------------------------ | ---------------------------------------------------------------------------------------- |
+| `PRIVATE_KEY` / `SOLANA_PRIVATE_KEY` | Wallet key (auto-generated if you left wallet empty)                                     |
+| `OPENAI_API_KEY`                     | LLM responses                                                                            |
+| `PINATA_JWT`                         | IPFS metadata upload ([pinata.cloud](https://pinata.cloud), needs `pinJSONToIPFS` scope) |
+| `X402_PAYEE_ADDRESS`                 | (x402 only) Wallet to receive payments                                                   |
+| `X402_PRICE`                         | (x402 only) Per-request price in USDC (default: 0.001)                                   |
 
 Fund your wallet with testnet tokens before registering:
 - **EVM:** [Sepolia faucet](https://cloud.google.com/application/web3/faucet/ethereum/sepolia), [Base Sepolia faucet](https://www.coinbase.com/faucets/base-ethereum-goerli-faucet)
@@ -227,10 +237,10 @@ curl -X POST http://localhost:3000/a2a \
 
 USDC micropayments via [x402 protocol](https://x402.org). Two provider paths:
 
-| Provider | Scheme | Chains |
-| -------- | ------ | ------ |
-| [PayAI](https://facilitator.payai.network) | Exact | Base, Polygon, SKALE Base |
-| [4mica](https://x402.4mica.xyz) | Credit | Ethereum Sepolia, Polygon Amoy |
+| Provider                                   | Scheme | Chains                         |
+| ------------------------------------------ | ------ | ------------------------------ |
+| [PayAI](https://facilitator.payai.network) | Exact  | Base, Polygon, SKALE Base      |
+| [4mica](https://x402.4mica.xyz)            | Credit | Ethereum Sepolia, Polygon Amoy |
 
 When enabled, the A2A server returns `402 Payment Required` for requests without valid payment headers.
 
